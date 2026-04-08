@@ -55,15 +55,23 @@ public class ProductController {
         );
 
         return ResponseEntity.ok(
-                new ApiResponse<>(HttpStatus.OK.value(), "Products retrieved successfully", pageResponse)
+                ApiResponse.success(
+                        HttpStatus.OK.value(),
+                        "Products retrieved successfully",
+                        pageResponse
+                )
         );
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<ProductResponse>> getProductById(@PathVariable Long id){
+    public ResponseEntity<ApiResponse<ProductResponse>> getProductById(@PathVariable Long id) {
         var response = ProductMapper.toResponse(getByIdProductUseCase.execute(id));
         return ResponseEntity.ok(
-                new ApiResponse<>(HttpStatus.OK.value(), "Product retrieved succesfully", response)
+                ApiResponse.success(
+                        HttpStatus.OK.value(),
+                        "Product retrieved succesfully",
+                        response
+                )
         );
     }
 
@@ -72,6 +80,12 @@ public class ProductController {
         var response = ProductMapper.toResponse(createProductUseCase.execute(request));
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(new ApiResponse<>(HttpStatus.CREATED.value(), "Product created succesfully", response));
+                .body(
+                        ApiResponse.success(
+                                HttpStatus.CREATED.value(),
+                                "Product created succesfully",
+                                response
+                        )
+                );
     }
 }
