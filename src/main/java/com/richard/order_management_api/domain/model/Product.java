@@ -1,8 +1,13 @@
 package com.richard.order_management_api.domain.model;
 
+import com.richard.order_management_api.web.exception.InsufficientStockException;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.math.BigDecimal;
 import java.util.BitSet;
 
+@Getter
 public class Product {
     private Long id;
     private String name;
@@ -16,29 +21,25 @@ public class Product {
         this.stock = stock;
     }
 
-    public void decreaseStock(int stock) {
-        if(stock <= 0){
+    public void decreaseStock(int quantity) {
+        if(quantity <= 0){
             throw new IllegalArgumentException("Quantity must be greater than zero.");
         }
-        if(this.stock < stock) {
-            throw new RuntimeException("Insufficient stock for product: " + name);
+        if(this.stock < quantity) {
+            throw new InsufficientStockException("Insufficient stock for product: " + name);
         }
-        this.stock -= stock;
+        this.stock -= quantity;
     }
 
-    public Long getId() {
-        return id;
+    public void increaseStock(int quantity) {
+        if(quantity <= 0){
+            throw new IllegalArgumentException("Quantity must be greater than zero.");
+        }
+        this.stock += quantity;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public BigDecimal getPrice() {
-        return price;
-    }
-
-    public int getStock() {
-        return stock;
+    public void update(String name, BigDecimal price) {
+        this.name = name;
+        this.price = price;
     }
 }
