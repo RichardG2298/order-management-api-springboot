@@ -4,7 +4,9 @@ import com.richard.order_management_api.domain.model.Product;
 import com.richard.order_management_api.domain.repository.ProductRepository;
 import com.richard.order_management_api.web.exception.InvalidProductException;
 import com.richard.order_management_api.web.exception.ProductNotFoundException;
+import org.springframework.stereotype.Service;
 
+@Service
 public class GetByIdProductUseCase {
     private final ProductRepository  productRepository;
 

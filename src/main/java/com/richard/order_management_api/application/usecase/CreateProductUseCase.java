@@ -3,7 +3,9 @@ package com.richard.order_management_api.application.usecase;
 import com.richard.order_management_api.application.dto.CreateProductRequest;
 import com.richard.order_management_api.domain.model.Product;
 import com.richard.order_management_api.domain.repository.ProductRepository;
+import org.springframework.stereotype.Service;
 
+@Service
 public class CreateProductUseCase {
     private final ProductRepository productRepository;
 

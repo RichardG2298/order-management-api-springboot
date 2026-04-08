@@ -5,8 +5,9 @@ import com.richard.order_management_api.domain.repository.ProductRepository;
 import com.richard.order_management_api.web.exception.ProductsNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 
-
+@Service
 public class GetAllProductUseCase {
     private final ProductRepository productRepository;
     public GetAllProductUseCase(ProductRepository productRepository) {
