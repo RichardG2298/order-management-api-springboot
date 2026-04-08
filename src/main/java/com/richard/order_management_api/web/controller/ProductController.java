@@ -1,10 +1,7 @@
 package com.richard.order_management_api.web.controller;
 
 import com.richard.order_management_api.application.dto.*;
-import com.richard.order_management_api.application.usecase.CreateProductUseCase;
-import com.richard.order_management_api.application.usecase.GetAllProductUseCase;
-import com.richard.order_management_api.application.usecase.GetByIdProductUseCase;
-import com.richard.order_management_api.application.usecase.UpdateProductUseCase;
+import com.richard.order_management_api.application.usecase.*;
 import com.richard.order_management_api.domain.model.Product;
 import com.richard.order_management_api.infrastructure.persistence.mapper.ProductMapper;
 import org.springframework.data.domain.Page;
@@ -24,12 +21,14 @@ public class ProductController {
     private final GetByIdProductUseCase getByIdProductUseCase;
     private final GetAllProductUseCase getAllProductUseCase;
     private final UpdateProductUseCase updateProductUseCase;
+    private final DeleteProductUseCase deleteProductUseCase;
 
-    public ProductController(CreateProductUseCase createProductUseCase, GetByIdProductUseCase getByIdProductUseCase, GetAllProductUseCase getAllProductUseCase, UpdateProductUseCase updateProductUseCase) {
+    public ProductController(CreateProductUseCase createProductUseCase, GetByIdProductUseCase getByIdProductUseCase, GetAllProductUseCase getAllProductUseCase, UpdateProductUseCase updateProductUseCase, DeleteProductUseCase deleteProductUseCase) {
         this.createProductUseCase = createProductUseCase;
         this.getByIdProductUseCase = getByIdProductUseCase;
         this.getAllProductUseCase = getAllProductUseCase;
         this.updateProductUseCase = updateProductUseCase;
+        this.deleteProductUseCase = deleteProductUseCase;
     }
 
     @GetMapping
@@ -102,5 +101,18 @@ public class ProductController {
                 )
         );
 
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse<ProductResponse>> delete(@PathVariable Long id) {
+        deleteProductUseCase.execute(id);
+
+        return ResponseEntity.ok(
+                ApiResponse.success(
+                        HttpStatus.OK.value(),
+                        "Product deleted successfully",
+                        null
+                )
+        );
     }
 }
