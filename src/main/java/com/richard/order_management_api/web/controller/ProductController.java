@@ -22,13 +22,15 @@ public class ProductController {
     private final GetAllProductUseCase getAllProductUseCase;
     private final UpdateProductUseCase updateProductUseCase;
     private final DeleteProductUseCase deleteProductUseCase;
+    private final PurchaseProductUseCase purchaseProductUseCase;
 
-    public ProductController(CreateProductUseCase createProductUseCase, GetByIdProductUseCase getByIdProductUseCase, GetAllProductUseCase getAllProductUseCase, UpdateProductUseCase updateProductUseCase, DeleteProductUseCase deleteProductUseCase) {
+    public ProductController(CreateProductUseCase createProductUseCase, GetByIdProductUseCase getByIdProductUseCase, GetAllProductUseCase getAllProductUseCase, UpdateProductUseCase updateProductUseCase, DeleteProductUseCase deleteProductUseCase, PurchaseProductUseCase purchaseProductUseCase) {
         this.createProductUseCase = createProductUseCase;
         this.getByIdProductUseCase = getByIdProductUseCase;
         this.getAllProductUseCase = getAllProductUseCase;
         this.updateProductUseCase = updateProductUseCase;
         this.deleteProductUseCase = deleteProductUseCase;
+        this.purchaseProductUseCase = purchaseProductUseCase;
     }
 
     @GetMapping
@@ -86,6 +88,20 @@ public class ProductController {
                                 response
                         )
                 );
+    }
+
+    @PostMapping("/purchase")
+    public ResponseEntity<ApiResponse<ProductResponse>> purchase(@RequestBody PurchaseRequest request) {
+        Product product = purchaseProductUseCase.execute(request);
+        ProductResponse response = ProductMapper.toResponse(product);
+
+        return ResponseEntity.ok(
+                ApiResponse.success(
+                        HttpStatus.OK.value(),
+                        "Product purchased successfully",
+                        response
+                )
+        );
     }
 
     @PutMapping("/{id}")
