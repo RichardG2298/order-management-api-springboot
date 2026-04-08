@@ -1,12 +1,10 @@
 package com.richard.order_management_api.web.controller;
 
-import com.richard.order_management_api.application.dto.ApiResponse;
-import com.richard.order_management_api.application.dto.CreateProductRequest;
-import com.richard.order_management_api.application.dto.PageResponse;
-import com.richard.order_management_api.application.dto.ProductResponse;
+import com.richard.order_management_api.application.dto.*;
 import com.richard.order_management_api.application.usecase.CreateProductUseCase;
 import com.richard.order_management_api.application.usecase.GetAllProductUseCase;
 import com.richard.order_management_api.application.usecase.GetByIdProductUseCase;
+import com.richard.order_management_api.application.usecase.UpdateProductUseCase;
 import com.richard.order_management_api.domain.model.Product;
 import com.richard.order_management_api.infrastructure.persistence.mapper.ProductMapper;
 import org.springframework.data.domain.Page;
@@ -25,11 +23,13 @@ public class ProductController {
     private final CreateProductUseCase createProductUseCase;
     private final GetByIdProductUseCase getByIdProductUseCase;
     private final GetAllProductUseCase getAllProductUseCase;
+    private final UpdateProductUseCase updateProductUseCase;
 
-    public ProductController(CreateProductUseCase createProductUseCase, GetByIdProductUseCase getByIdProductUseCase, GetAllProductUseCase getAllProductUseCase) {
+    public ProductController(CreateProductUseCase createProductUseCase, GetByIdProductUseCase getByIdProductUseCase, GetAllProductUseCase getAllProductUseCase, UpdateProductUseCase updateProductUseCase) {
         this.createProductUseCase = createProductUseCase;
         this.getByIdProductUseCase = getByIdProductUseCase;
         this.getAllProductUseCase = getAllProductUseCase;
+        this.updateProductUseCase = updateProductUseCase;
     }
 
     @GetMapping
@@ -87,5 +87,20 @@ public class ProductController {
                                 response
                         )
                 );
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ApiResponse<ProductResponse>> update(@PathVariable Long id, @RequestBody ProductUpdateRequest request) {
+        Product updatedProduct = updateProductUseCase.execute(id, request);
+        ProductResponse response = ProductMapper.toResponse(updatedProduct);
+
+        return ResponseEntity.ok(
+                ApiResponse.success(
+                        HttpStatus.OK.value(),
+                        "Product updated successfully",
+                        response
+                )
+        );
+
     }
 }
