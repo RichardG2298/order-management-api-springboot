@@ -1,5 +1,6 @@
 package com.richard.order_management_api.domain.model;
 
+import com.richard.order_management_api.web.exception.InactiveProductException;
 import com.richard.order_management_api.web.exception.InsufficientStockException;
 import com.richard.order_management_api.web.exception.ProductAlreadyDeletedException;
 import lombok.Getter;
@@ -25,6 +26,7 @@ public class Product {
     }
 
     public void decreaseStock(int quantity) {
+        validateIsActive();
         if(quantity <= 0){
             throw new IllegalArgumentException("Quantity must be greater than zero.");
         }
@@ -35,6 +37,7 @@ public class Product {
     }
 
     public void increaseStock(int quantity) {
+        validateIsActive();
         if(quantity <= 0){
             throw new IllegalArgumentException("Quantity must be greater than zero.");
         }
@@ -50,6 +53,17 @@ public class Product {
         if(!this.active){
             throw new ProductAlreadyDeletedException(id);
         }
+        this.active = false;
+    }
+
+    public void validateIsActive() {
+        if (!this.active) {
+            throw new InactiveProductException(this.id);
+        }
+    }
+
+    public void deactivate() {
+        validateIsActive();
         this.active = false;
     }
 }
