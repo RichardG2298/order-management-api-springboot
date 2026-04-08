@@ -4,6 +4,8 @@ import com.richard.order_management_api.application.dto.*;
 import com.richard.order_management_api.application.usecase.*;
 import com.richard.order_management_api.domain.model.Product;
 import com.richard.order_management_api.infrastructure.persistence.mapper.ProductMapper;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -36,7 +38,8 @@ public class ProductController {
     @GetMapping
     public ResponseEntity<ApiResponse<PageResponse<ProductResponse>>> getAllProducts(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
+            @RequestParam(defaultValue = "10") int size,
+            HttpServletRequest request
     ) {
         Pageable pageable = PageRequest.of(page, size);
         Page<Product> productsPage = getAllProductUseCase.execute(pageable);
@@ -59,60 +62,78 @@ public class ProductController {
                 ApiResponse.success(
                         HttpStatus.OK.value(),
                         "Products retrieved successfully",
+                        request.getRequestURI(),
                         pageResponse
                 )
         );
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<ProductResponse>> getProductById(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<ProductResponse>> getProductById(
+            @PathVariable Long id,
+            HttpServletRequest request
+    ) {
         var response = ProductMapper.toResponse(getByIdProductUseCase.execute(id));
         return ResponseEntity.ok(
                 ApiResponse.success(
                         HttpStatus.OK.value(),
                         "Product retrieved succesfully",
+                        request.getRequestURI(),
                         response
                 )
         );
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse<ProductResponse>> create(@RequestBody CreateProductRequest request) {
-        var response = ProductMapper.toResponse(createProductUseCase.execute(request));
+    public ResponseEntity<ApiResponse<ProductResponse>> create(
+            @Valid @RequestBody CreateProductRequest productRequest,
+            HttpServletRequest request
+    ) {
+        var response = ProductMapper.toResponse(createProductUseCase.execute(productRequest));
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(
                         ApiResponse.success(
                                 HttpStatus.CREATED.value(),
                                 "Product created succesfully",
+                                request.getRequestURI(),
                                 response
                         )
                 );
     }
 
     @PostMapping("/purchase")
-    public ResponseEntity<ApiResponse<ProductResponse>> purchase(@RequestBody PurchaseRequest request) {
-        Product product = purchaseProductUseCase.execute(request);
+    public ResponseEntity<ApiResponse<ProductResponse>> purchase(
+            @RequestBody PurchaseRequest purchaseRequest,
+            HttpServletRequest request
+    ) {
+        Product product = purchaseProductUseCase.execute(purchaseRequest);
         ProductResponse response = ProductMapper.toResponse(product);
 
         return ResponseEntity.ok(
                 ApiResponse.success(
                         HttpStatus.OK.value(),
                         "Product purchased successfully",
+                        request.getRequestURI(),
                         response
                 )
         );
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<ProductResponse>> update(@PathVariable Long id, @RequestBody ProductUpdateRequest request) {
-        Product updatedProduct = updateProductUseCase.execute(id, request);
+    public ResponseEntity<ApiResponse<ProductResponse>> update(
+            @PathVariable Long id,
+            @RequestBody UpdateProductRequest updateProductRequest,
+            HttpServletRequest request
+    ) {
+        Product updatedProduct = updateProductUseCase.execute(id, updateProductRequest);
         ProductResponse response = ProductMapper.toResponse(updatedProduct);
 
         return ResponseEntity.ok(
                 ApiResponse.success(
                         HttpStatus.OK.value(),
                         "Product updated successfully",
+                        request.getRequestURI(),
                         response
                 )
         );
@@ -120,13 +141,17 @@ public class ProductController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<ProductResponse>> delete(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<ProductResponse>> delete(
+            @PathVariable Long id,
+            HttpServletRequest  request
+    ) {
         deleteProductUseCase.execute(id);
 
         return ResponseEntity.ok(
                 ApiResponse.success(
                         HttpStatus.OK.value(),
                         "Product deleted successfully",
+                        request.getRequestURI(),
                         null
                 )
         );
