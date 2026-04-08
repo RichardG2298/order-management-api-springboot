@@ -1,6 +1,6 @@
 package com.richard.order_management_api.application.usecase;
 
-import com.richard.order_management_api.application.dto.ProductUpdateRequest;
+import com.richard.order_management_api.application.dto.UpdateProductRequest;
 import com.richard.order_management_api.domain.model.Product;
 import com.richard.order_management_api.domain.repository.ProductRepository;
 import com.richard.order_management_api.web.exception.ProductNotFoundException;
@@ -14,7 +14,7 @@ public class UpdateProductUseCase {
         this.productRepository = productRepository;
     }
 
-    public Product execute(Long id, ProductUpdateRequest request) {
+    public Product execute(Long id, UpdateProductRequest request) {
         Product existingProduct = productRepository.findById(id)
                 .orElseThrow(() -> new ProductNotFoundException(id));
 
