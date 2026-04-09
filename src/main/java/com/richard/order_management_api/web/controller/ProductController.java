@@ -3,11 +3,13 @@ package com.richard.order_management_api.web.controller;
 import com.richard.order_management_api.application.dto.*;
 import com.richard.order_management_api.application.usecase.*;
 import com.richard.order_management_api.domain.model.Product;
+import com.richard.order_management_api.infrastructure.persistence.mapper.PageMapper;
 import com.richard.order_management_api.infrastructure.persistence.mapper.ProductMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -33,25 +35,19 @@ public class ProductController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<Page<ProductResponse>>> getAllProducts(
-            @RequestParam(required = false) String name,
-            @RequestParam(required = false) Boolean active,
-            Pageable pageable,
+    public ResponseEntity<ApiResponse<PageResponse<ProductResponse>>> getAllProducts(
+            ProductFilter filter,
+            @PageableDefault(size = 10, page = 0) Pageable pageable,
             HttpServletRequest request
     ) {
-
-        ProductFilter filter = new ProductFilter();
-        filter.setName(name);
-        filter.setActive(active);
-
-        var response = getAllProductsUseCase.execute(filter, pageable);
+        var page = getAllProductsUseCase.execute(filter, pageable);
 
         return ResponseEntity.ok(
                 ApiResponse.success(
                         HttpStatus.OK.value(),
                         "Products retrieved successfully",
                         request.getRequestURI(),
-                        response
+                        PageMapper.toPageResponse(page)
                 )
         );
     }
@@ -61,7 +57,7 @@ public class ProductController {
             @PathVariable Long id,
             HttpServletRequest request
     ) {
-        var response = ProductMapper.toResponse(getByIdProductUseCase.execute(id));
+        var response = getByIdProductUseCase.execute(id);
         return ResponseEntity.ok(
                 ApiResponse.success(
                         HttpStatus.OK.value(),
@@ -77,7 +73,7 @@ public class ProductController {
             @Valid @RequestBody CreateProductRequest productRequest,
             HttpServletRequest request
     ) {
-        var response = ProductMapper.toResponse(createProductUseCase.execute(productRequest));
+        var response = createProductUseCase.execute(productRequest);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(
@@ -95,8 +91,7 @@ public class ProductController {
             @RequestBody PurchaseRequest purchaseRequest,
             HttpServletRequest request
     ) {
-        Product product = purchaseProductUseCase.execute(purchaseRequest);
-        ProductResponse response = ProductMapper.toResponse(product);
+        ProductResponse response = purchaseProductUseCase.execute(purchaseRequest);
 
         return ResponseEntity.ok(
                 ApiResponse.success(
@@ -114,8 +109,7 @@ public class ProductController {
             @RequestBody UpdateProductRequest updateProductRequest,
             HttpServletRequest request
     ) {
-        Product updatedProduct = updateProductUseCase.execute(id, updateProductRequest);
-        ProductResponse response = ProductMapper.toResponse(updatedProduct);
+        ProductResponse response = updateProductUseCase.execute(id, updateProductRequest);
 
         return ResponseEntity.ok(
                 ApiResponse.success(
