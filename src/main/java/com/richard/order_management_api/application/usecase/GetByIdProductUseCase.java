@@ -1,10 +1,13 @@
 package com.richard.order_management_api.application.usecase;
 
+import com.richard.order_management_api.application.dto.ProductResponse;
 import com.richard.order_management_api.domain.model.Product;
 import com.richard.order_management_api.domain.repository.ProductRepository;
+import com.richard.order_management_api.infrastructure.persistence.mapper.ProductMapper;
 import com.richard.order_management_api.web.exception.InvalidProductException;
 import com.richard.order_management_api.web.exception.ProductNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class GetByIdProductUseCase {
@@ -14,11 +17,16 @@ public class GetByIdProductUseCase {
         this.productRepository = productRepository;
     }
 
-    public Product execute(Long id) {
+    @Transactional(readOnly = true)
+    public ProductResponse execute(Long id) {
         if(id == null || id <= 0){
             throw new InvalidProductException("Id must be greater than 0");
         }
-        return productRepository.findById(id)
-                .orElseThrow(() -> new ProductNotFoundException(id));
+
+        Product product = productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException(id));
+
+        product.validateIsActive();
+
+        return ProductMapper.toResponse(product);
     }
 }

@@ -1,8 +1,11 @@
 package com.richard.order_management_api.application.usecase;
 
 import com.richard.order_management_api.application.dto.CreateProductRequest;
+import com.richard.order_management_api.application.dto.ProductResponse;
 import com.richard.order_management_api.domain.model.Product;
 import com.richard.order_management_api.domain.repository.ProductRepository;
+import com.richard.order_management_api.infrastructure.persistence.mapper.ProductMapper;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -13,7 +16,8 @@ public class CreateProductUseCase {
         this.productRepository = productRepository;
     }
 
-    public Product execute(CreateProductRequest request){
+    @Transactional
+    public ProductResponse execute(CreateProductRequest request){
         Product product = new Product(
                 null,
                 request.getName(),
@@ -21,6 +25,8 @@ public class CreateProductUseCase {
                 request.getStock(),
                 true
         );
-        return productRepository.save(product);
+        Product productSave = productRepository.save(product);
+
+        return ProductMapper.toResponse(productSave);
     }
 }
