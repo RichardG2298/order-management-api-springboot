@@ -36,13 +36,11 @@ public class ProductRepositoryImpl implements ProductRepository {
     }
 
     @Override
-    public Page<Product> findAll(Pageable pageable) {
-        Page<ProductEntity> entitiesPage = jpaRepository.findAll(pageable); // devuelve Page<ProductEntity>
-        return entitiesPage.map(ProductMapper::toDomain); // convierte Page<ProductEntity> → Page<Product>
-    }
-
-    @Override
-    public void deleteById(Long id) {
-        jpaRepository.deleteById(id);
+    public Page<ProductEntity> findAllWithFilters(String name, Boolean active, Pageable pageable) {
+        return jpaRepository.findAllWithFilters(
+                        name,
+                        active,
+                        pageable
+                ); // 🔥 Domain → DTO
     }
 }
