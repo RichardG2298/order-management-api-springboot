@@ -1,6 +1,7 @@
 package com.richard.order_management_api.domain.repository;
 
 import com.richard.order_management_api.domain.model.Product;
+import com.richard.order_management_api.infrastructure.persistence.entity.ProductEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -11,7 +12,5 @@ public interface ProductRepository {
 
     Optional<Product> findById(Long id);
 
-    Page<Product> findAll(Pageable pageable);
-
-    void deleteById(Long id);
+    Page<ProductEntity> findAllWithFilters(String name, Boolean active, Pageable pageable);
 }
