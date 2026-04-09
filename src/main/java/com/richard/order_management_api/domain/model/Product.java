@@ -3,6 +3,7 @@ package com.richard.order_management_api.domain.model;
 import com.richard.order_management_api.web.exception.InactiveProductException;
 import com.richard.order_management_api.web.exception.InsufficientStockException;
 import com.richard.order_management_api.web.exception.ProductAlreadyDeletedException;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,12 +18,16 @@ public class Product {
     private int stock;
     private boolean active;
 
-    public Product(Long id, String name, BigDecimal price, int stock) {
+    public Product(Long id, String name, BigDecimal price, int stock, boolean active) {
         this.id = id;
         this.name = name;
         this.price = price;
         this.stock = stock;
-        this.active = true;
+        this.active = active;
+    }
+
+    public static Product create(String name, BigDecimal price, int stock) {
+        return new Product(null, name, price, stock, true);
     }
 
     public void decreaseStock(int quantity) {
