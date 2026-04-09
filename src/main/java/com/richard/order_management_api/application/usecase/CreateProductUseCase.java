@@ -18,7 +18,8 @@ public class CreateProductUseCase {
                 null,
                 request.getName(),
                 request.getPrice(),
-                request.getStock()
+                request.getStock(),
+                true
         );
         return productRepository.save(product);
     }
