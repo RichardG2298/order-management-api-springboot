@@ -7,13 +7,10 @@ import com.richard.order_management_api.infrastructure.persistence.mapper.Produc
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/products")
@@ -21,49 +18,40 @@ public class ProductController {
 
     private final CreateProductUseCase createProductUseCase;
     private final GetByIdProductUseCase getByIdProductUseCase;
-    private final GetAllProductUseCase getAllProductUseCase;
+    private final GetAllProductsUseCase getAllProductsUseCase;
     private final UpdateProductUseCase updateProductUseCase;
     private final DeleteProductUseCase deleteProductUseCase;
     private final PurchaseProductUseCase purchaseProductUseCase;
 
-    public ProductController(CreateProductUseCase createProductUseCase, GetByIdProductUseCase getByIdProductUseCase, GetAllProductUseCase getAllProductUseCase, UpdateProductUseCase updateProductUseCase, DeleteProductUseCase deleteProductUseCase, PurchaseProductUseCase purchaseProductUseCase) {
+    public ProductController(CreateProductUseCase createProductUseCase, GetByIdProductUseCase getByIdProductUseCase, GetAllProductsUseCase getAllProductsUseCase, UpdateProductUseCase updateProductUseCase, DeleteProductUseCase deleteProductUseCase, PurchaseProductUseCase purchaseProductUseCase) {
         this.createProductUseCase = createProductUseCase;
         this.getByIdProductUseCase = getByIdProductUseCase;
-        this.getAllProductUseCase = getAllProductUseCase;
+        this.getAllProductsUseCase = getAllProductsUseCase;
         this.updateProductUseCase = updateProductUseCase;
         this.deleteProductUseCase = deleteProductUseCase;
         this.purchaseProductUseCase = purchaseProductUseCase;
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<PageResponse<ProductResponse>>> getAllProducts(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
+    public ResponseEntity<ApiResponse<Page<ProductResponse>>> getAllProducts(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) Boolean active,
+            Pageable pageable,
             HttpServletRequest request
     ) {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<Product> productsPage = getAllProductUseCase.execute(pageable);
 
-        // mapear a DTO
-        List<ProductResponse> items = productsPage.getContent()
-                .stream()
-                .map(ProductMapper::toResponse)
-                .toList();
+        ProductFilter filter = new ProductFilter();
+        filter.setName(name);
+        filter.setActive(active);
 
-        PageResponse<ProductResponse> pageResponse = new PageResponse<>(
-                items,
-                productsPage.getNumber() + 1,
-                productsPage.getSize(),
-                (int) productsPage.getTotalElements(),
-                productsPage.getTotalPages()
-        );
+        var response = getAllProductsUseCase.execute(filter, pageable);
 
         return ResponseEntity.ok(
                 ApiResponse.success(
                         HttpStatus.OK.value(),
                         "Products retrieved successfully",
                         request.getRequestURI(),
-                        pageResponse
+                        response
                 )
         );
     }
