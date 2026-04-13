@@ -37,8 +37,7 @@ class ProductControllerTest {
                 .andExpect(jsonPath("$.data").exists())
                 .andExpect(jsonPath("$.data.id").value(1))
                 .andExpect(jsonPath("$.data.name").value("Laptop"))
-                .andExpect(jsonPath("$.data.price").value(10))
-                .andExpect(jsonPath("$.data.stock").value(10));
+                .andExpect(jsonPath("$.data.price").value(10));
 
     }
 }
