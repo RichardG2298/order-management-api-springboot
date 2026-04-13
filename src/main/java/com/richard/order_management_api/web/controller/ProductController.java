@@ -2,14 +2,11 @@ package com.richard.order_management_api.web.controller;
 
 import com.richard.order_management_api.application.dto.*;
 import com.richard.order_management_api.application.usecase.*;
-import com.richard.order_management_api.domain.model.Product;
 import com.richard.order_management_api.infrastructure.persistence.mapper.PageMapper;
-import com.richard.order_management_api.infrastructure.persistence.mapper.ProductMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
