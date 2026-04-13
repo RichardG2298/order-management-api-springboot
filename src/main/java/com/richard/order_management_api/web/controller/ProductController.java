@@ -7,6 +7,8 @@ import com.richard.order_management_api.infrastructure.persistence.mapper.PageMa
 import com.richard.order_management_api.infrastructure.persistence.mapper.ProductMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/products")
 public class ProductController {
 
+    private static final Logger log = LoggerFactory.getLogger(ProductController.class);
     private final CreateProductUseCase createProductUseCase;
     private final GetByIdProductUseCase getByIdProductUseCase;
     private final GetAllProductsUseCase getAllProductsUseCase;
@@ -40,6 +43,12 @@ public class ProductController {
             @PageableDefault(size = 10, page = 0) Pageable pageable,
             HttpServletRequest request
     ) {
+        log.debug("{} {} | filter={} | pageable={}",
+                request.getMethod(),
+                request.getRequestURI(),
+                filter,
+                pageable);
+
         var page = getAllProductsUseCase.execute(filter, pageable);
 
         return ResponseEntity.ok(
@@ -57,7 +66,10 @@ public class ProductController {
             @PathVariable Long id,
             HttpServletRequest request
     ) {
+        log.debug("Fetching product with id: {}", id);
+
         var response = getByIdProductUseCase.execute(id);
+
         return ResponseEntity.ok(
                 ApiResponse.success(
                         HttpStatus.OK.value(),
@@ -73,7 +85,10 @@ public class ProductController {
             @Valid @RequestBody CreateProductRequest productRequest,
             HttpServletRequest request
     ) {
+        log.debug("Product Request Payload: {}", productRequest);
+
         var response = createProductUseCase.execute(productRequest);
+
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(
@@ -91,6 +106,8 @@ public class ProductController {
             @RequestBody PurchaseRequest purchaseRequest,
             HttpServletRequest request
     ) {
+        log.debug("Purchase Request Payload: {}", purchaseRequest);
+
         ProductResponse response = purchaseProductUseCase.execute(purchaseRequest);
 
         return ResponseEntity.ok(
@@ -109,6 +126,8 @@ public class ProductController {
             @RequestBody UpdateProductRequest updateProductRequest,
             HttpServletRequest request
     ) {
+        log.debug("Update Product Request Payload: {}", updateProductRequest);
+
         ProductResponse response = updateProductUseCase.execute(id, updateProductRequest);
 
         return ResponseEntity.ok(
@@ -125,8 +144,10 @@ public class ProductController {
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<ProductResponse>> delete(
             @PathVariable Long id,
-            HttpServletRequest  request
+            HttpServletRequest request
     ) {
+        log.debug("Delete Product Request Payload: {}", id);
+
         deleteProductUseCase.execute(id);
 
         return ResponseEntity.ok(
