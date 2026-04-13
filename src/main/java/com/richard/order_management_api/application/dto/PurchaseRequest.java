@@ -2,9 +2,10 @@ package com.richard.order_management_api.application.dto;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import lombok.Data;
 import lombok.Getter;
 
-@Getter
+@Data
 public class PurchaseRequest {
     @NotNull(message = "Product ID cannot be null")
     private Long productId;
