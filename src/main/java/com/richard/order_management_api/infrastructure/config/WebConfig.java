@@ -1,6 +1,6 @@
 package com.richard.order_management_api.infrastructure.config;
 
-import com.richard.order_management_api.infrastructure.web.interceptor.LoggingInterceptor;
+import com.richard.order_management_api.web.interceptor.LoggingInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
