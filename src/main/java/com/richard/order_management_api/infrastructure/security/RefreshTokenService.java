@@ -6,15 +6,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class RefreshTokenService {
     private final JpaRefreshTokenRepository repository;
 
-    public RefreshTokenEntity create(String token, String username, LocalDateTime expiredAt) {
+    public RefreshTokenEntity save(String token, String username, LocalDateTime expiredAt) {
         RefreshTokenEntity refreshToken = new RefreshTokenEntity();
         refreshToken.setToken(token);
         refreshToken.setUsername(username);
