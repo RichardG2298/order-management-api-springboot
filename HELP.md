@@ -1,95 +1,34 @@
-# 🧾 Order Management API
 
-API REST desarrollada con Spring Boot para la gestión de productos y compras, implementando autenticación segura con JWT, Refresh Tokens y arquitectura limpia.
-___
+### Reference Documentation
+For further reference, please consider the following sections:
 
-## 🚀 Tecnologías
+* [Official Apache Maven documentation](https://maven.apache.org/guides/index.html)
+* [Spring Boot Maven Plugin Reference Guide](https://docs.spring.io/spring-boot/4.0.5/maven-plugin)
+* [Create an OCI image](https://docs.spring.io/spring-boot/4.0.5/maven-plugin/build-image.html)
+* [Spring Web](https://docs.spring.io/spring-boot/4.0.5/reference/web/servlet.html)
+* [Spring Data JPA](https://docs.spring.io/spring-boot/4.0.5/reference/data/sql.html#data.sql.jpa-and-spring-data)
+* [Spring Security](https://docs.spring.io/spring-boot/4.0.5/reference/web/spring-security.html)
+* [Validation](https://docs.spring.io/spring-boot/4.0.5/reference/io/validation.html)
+* [Spring Boot DevTools](https://docs.spring.io/spring-boot/4.0.5/reference/using/devtools.html)
+* [SpringDoc OpenAPI](https://springdoc.org/)
 
-- Java 17
-- Spring Boot
-- Spring Security
-- JWT (JSON Web Tokens)
-- MySQL
-- JPA / Hibernate
-- Docker & Docker Compose
-- Arquitectura Hexagonal
+### Guides
+The following guides illustrate how to use some features concretely:
 
-___
+* [Building a RESTful Web Service](https://spring.io/guides/gs/rest-service/)
+* [Serving Web Content with Spring MVC](https://spring.io/guides/gs/serving-web-content/)
+* [Building REST services with Spring](https://spring.io/guides/tutorials/rest/)
+* [Accessing Data with JPA](https://spring.io/guides/gs/accessing-data-jpa/)
+* [Accessing data with MySQL](https://spring.io/guides/gs/accessing-data-mysql/)
+* [Securing a Web Application](https://spring.io/guides/gs/securing-web/)
+* [Spring Boot and OAuth2](https://spring.io/guides/tutorials/spring-boot-oauth2/)
+* [Authenticating a User with LDAP](https://spring.io/guides/gs/authenticating-ldap/)
+* [Validation](https://spring.io/guides/gs/validating-form-input/)
+* [SpringDoc OpenAPI](https://github.com/springdoc/springdoc-openapi-demos/)
 
-## 🧠 Características principales
+### Maven Parent overrides
 
-- ✅ Autenticación con JWT
-- ✅ Refresh Token con rotación
-- ✅ Control de roles (`ROLE_ADMIN`, `ROLE_USER`)
-- ✅ Manejo global de excepciones
-___
-
-## 🏗️ Estructura del proyecto
-
-```bash
-├── application
-│   ├── dto
-│   └── usecase
-├── domain
-│   ├── model
-│   └── repository
-├── infrastructure
-│   ├── config
-│   ├── persistence
-│   ├── security
-│   └── util
-└── web
-    ├── controller
-    └── exception
-```
-___
-
-## 🔐 Autenticación
-
-La API utiliza:
-
-- Access Token (expira en 1 hora)
-- Refresh Token (persistido en base de datos)
-
-```bash
-Login → Access Token + Refresh Token
-Access Token → usado en requests
-Refresh Token → genera nuevos tokens
-Rotación → invalida el anterior
-```
-___
-## 🧪 Endpoints
-### 🔑 Auth
-
-| Método | Endpoint       | Descripción   |
-| ------ | -------------- | ------------- |
-| POST   | /auth/register | Registro      |
-| POST   | /auth/login    | Login         |
-| POST   | /auth/refresh  | Renovar token |
-| POST   | /auth/logout   | Logout        |
-
-### 📦 Productos
-
-| Método | Endpoint       | Rol   |
-| ------ | -------------- | ----- |
-| GET    | /products      | USER  |
-| GET    | /products/{id} | USER  |
-| POST   | /products      | ADMIN |
-| PUT    | /products/{id} | ADMIN |
-| DELETE | /products/{id} | ADMIN |
-
-## 🐳 Ejecución con Docker
-1. Construir el proyecto
-``mvn clean package -DskipTests``
-2. Levantar contenedores
-``docker-compose up --build``
-3. Acceder a la API
-``http://localhost:8080``
-
-## 🔐 Seguridad
-- 🔒 Passwords encriptadas con BCrypt
-- 🛡️ Validación de JWT con filtro personalizado
-- 🚫 Manejo de errores centralizado
-- 🔄 Revocación de refresh tokens
-
-
+Due to Maven's design, elements are inherited from the parent POM to the project POM.
+While most of the inheritance is fine, it also inherits unwanted elements like `<license>` and `<developers>` from the parent.
+To prevent this, the project POM contains empty overrides for these elements.
+If you manually switch to a different parent and actually want the inheritance, you need to remove those overrides.
