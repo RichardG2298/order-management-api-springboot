@@ -1,4 +1,4 @@
-package com.richard.order_management_api.infrastructure.web.interceptor;
+package com.richard.order_management_api.web.interceptor;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
